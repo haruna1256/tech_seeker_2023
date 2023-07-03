@@ -14,7 +14,8 @@ class RoomPage extends StatefulWidget {
 
 class RoomPageState extends State {
   final TextEditingController controller = TextEditingController();
-
+  String? ledColor = '赤色';
+  String?  buzzerVolume = '25';
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +57,31 @@ class RoomPageState extends State {
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               ElevatedButton(onPressed: () {}, child: const Text('ON')),
               ElevatedButton(onPressed: () {}, child: const Text('OFF')),
-              ElevatedButton(onPressed: () {}, child: const Text('音量')),
+              DropdownButton(items: const[
+                DropdownMenuItem(
+                  value: '25',
+                  child:  Text('25%'),
+                ),
+                DropdownMenuItem(
+                  value: '50',
+                  child:  Text('50%'),
+                ),
+                DropdownMenuItem(
+                  value: '75',
+                  child:  Text('75%'),
+                ),
+                DropdownMenuItem(
+                  value: '100',
+                  child:  Text('100%'),
+                ),
+              ],
+                onChanged: (String? value){
+                setState(() {
+                  buzzerVolume = value;
+                });
+              },
+                value: buzzerVolume,
+              )
             ]),
             const Text('LED',
                 style: TextStyle(
@@ -66,7 +91,28 @@ class RoomPageState extends State {
               ,child:Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                 ElevatedButton(onPressed: () {}, child: const Text('ON')),
                 ElevatedButton(onPressed: () {}, child: const Text('OFF')),
-                ElevatedButton(onPressed: () {}, child: const Text('色')),
+                DropdownButton(
+                    items: const[
+                      DropdownMenuItem(
+                        value: '赤色',
+                        child:  Text('赤色'),
+                      ),
+                      DropdownMenuItem(
+                        value: '青色',
+                        child:  Text('青色'),
+                      ),
+                      DropdownMenuItem(
+                        value: '黄色',
+                        child:  Text('黄色'),
+                      ),
+                    ],
+                   onChanged: (String? value){
+                      setState(() {
+                        ledColor = value;
+                      });
+                   },
+                    value: ledColor,
+                )
               ]),
             ),
           ],
@@ -119,7 +165,7 @@ class RoomPageState extends State {
             } else if (index == 1) {
               // go アイコンが押されたときの処理
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => GotoPage()));
+                  context, MaterialPageRoute(builder: (context) => const GotoPage()));
               // 他の処理を追加
             }
           },

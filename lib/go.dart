@@ -4,6 +4,8 @@ import 'package:tech_seeker_2023/attack.dart';
 import 'package:tech_seeker_2023/room.dart';
 
 class GotoPage extends StatefulWidget {
+  const GotoPage({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return GoPageState();
@@ -132,7 +134,7 @@ class GoPageState extends State {
             } else if (index == 1) {
               // go アイコンが押されたときの処理
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => GotoPage()));
+                  context, MaterialPageRoute(builder: (context) => const GotoPage()));
               // 他の処理を追加
             }
           },

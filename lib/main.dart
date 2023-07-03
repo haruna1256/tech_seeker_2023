@@ -134,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           fontSize: 20
                       ),)),),*/
 
-              Padding(padding: const EdgeInsets.only(top: 100, bottom: 100)
+              Padding(padding: const EdgeInsets.only(top: 160, bottom: 100)
                 , child: ElevatedButton(
                     style: OutlinedButton.styleFrom(
                       minimumSize: const Size(160, 60),
@@ -146,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => GotoPage()));
+                          MaterialPageRoute(builder: (context) => const GotoPage()));
                     },
                     child: const Text("自分が外に居る時",
                       style: TextStyle(
@@ -172,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: TextStyle(
                           fontSize: 18
                       ),)),),
-              Padding(padding: const EdgeInsets.only(top: 220,right:30,left:30)
+              Padding(padding: const EdgeInsets.only(top: 190,right:30,left:30)
                 ,
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly, children:[
