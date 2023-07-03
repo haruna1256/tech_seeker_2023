@@ -118,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             // メソッドみたいなもの
             children: <Widget>[
-              Padding(padding: const EdgeInsets.only(top: 100),
+              Padding(padding: const EdgeInsets.only(top: 150),
                 child: Image.asset('images/ロゴ.png',),),
               /*Padding(padding: const EdgeInsets.only()
                 , child: ElevatedButton(
@@ -134,34 +134,45 @@ class _MyHomePageState extends State<MyHomePage> {
                           fontSize: 20
                       ),)),),*/
 
-              Padding(padding: const EdgeInsets.only(top: 50, bottom: 100)
+              Padding(padding: const EdgeInsets.only(top: 100, bottom: 100)
                 , child: ElevatedButton(
                     style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(200, 80)),
+                      minimumSize: const Size(160, 60),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(0)),
+                      ),
+                      padding: EdgeInsets.zero,
+                      elevation: 0, // ボタンの影を無効化
+                    ),
                     onPressed: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => GotoPage()));
                     },
                     child: const Text("自分が外に居る時",
                       style: TextStyle(
-                          fontSize: 20
+                          fontSize: 18
                       ),)),),
-
 
               Padding(padding: const EdgeInsets.only(bottom: 10)
                 , child: ElevatedButton(
                     style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(200, 80)),
+                        minimumSize: const Size(160, 60),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(0)),
+                        ),
+                      padding: EdgeInsets.zero,
+                      elevation: 0, // ボタンの影を無効化
+                    ),
                     onPressed: () {
                       Navigator.push(context,
                           MaterialPageRoute(
                               builder: (context) => const RoomPage()));
                     },
-                    child: const Text("自分が部屋に居る時",
+                    child: const Text(" 自分が部屋に居る時 ",
                       style: TextStyle(
-                          fontSize: 20
+                          fontSize: 18
                       ),)),),
-              Padding(padding: const EdgeInsets.only(top: 130,right:30,left:30)
+              Padding(padding: const EdgeInsets.only(top: 220,right:30,left:30)
                 ,
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly, children:[
