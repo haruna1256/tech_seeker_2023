@@ -1,6 +1,6 @@
 # tech_seeker_2023
 
-A new Flutter project.
+親フラ感知のアプリ画面
 
 ## Getting Started
 
