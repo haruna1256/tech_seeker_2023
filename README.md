@@ -1,6 +1,9 @@
 # tech_seeker_2023
 
-親フラ感知のアプリ画面
+*親フラ感知のアプリ画面*
+初期設定を行う
+
+**設定した内容をBluetoothを用いてesp32に送信する**
 
 ## Getting Started
 
