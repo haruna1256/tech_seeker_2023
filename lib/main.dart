@@ -1,10 +1,27 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:tech_seeker_2023/go.dart';
 import 'package:tech_seeker_2023/room.dart';
-//import 'package:tech_seeker/bluetooth_demo.dart';
+import 'package:tech_seeker_2023/bluetooth_device_list.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 
 void main() {
-  runApp(const MyApp());
+  if (Platform.isAndroid) {
+    WidgetsFlutterBinding.ensureInitialized();
+    [
+      Permission.location,
+      Permission.storage,
+      Permission.bluetooth,
+      Permission.bluetoothConnect,
+      Permission.bluetoothScan
+    ].request().then((status) {
+      runApp(const MyApp());
+    });
+  } else {
+    runApp(const MyApp());
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -19,7 +36,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const FindDevicesScreen(),
     );
   }
 }
