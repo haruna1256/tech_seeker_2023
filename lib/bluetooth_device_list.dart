@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:tech_seeker_2023/bluetooth_constants.dart';
 import 'package:tech_seeker_2023/bluetooth_device.dart';
+import 'package:tech_seeker_2023/main.dart';
 
 class FindDevicesScreen extends StatefulWidget {
   const FindDevicesScreen({super.key});
@@ -128,11 +129,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
               return;
           }
         });
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => DeviceScreen(device: device),
-          ),
-        );
+        Navigator.pop(context,device);
       },
     );
   }

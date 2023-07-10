@@ -3,15 +3,18 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:tech_seeker_2023/bluetooth_constants.dart';
+import 'package:tech_seeker_2023/main.dart';
+import 'package:tech_seeker_2023/room.dart';
+
 
 //ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 
 
 class DeviceScreen extends StatefulWidget {
-  const DeviceScreen({super.key, required this.device});
-
-  final BluetoothDevice device;
+  const DeviceScreen({super.key,this.device,this.ledColor});
+  final String? ledColor;
+  final BluetoothDevice? device;
 
   @override
   State<StatefulWidget> createState() {
@@ -25,7 +28,7 @@ class DeviceScreenState extends State<DeviceScreen> {
 
   //final _inputSsidController = TextEditingController();
   //final _inputPasswordController = TextEditingController();
-  String? _selectedColor;
+  String? ledColor;
 
   Future<void> writeToCharacteristic(
       BluetoothCharacteristic characteristic, String value) async {
@@ -38,54 +41,26 @@ class DeviceScreenState extends State<DeviceScreen> {
 
   Future<BluetoothService?> findService() async {
     // 現在のBluetoothの接続状態を取得する
-    final state = await widget.device.state.first;
+    final state = await widget.device?.state.first;
 
     // 接続状態が切断状態の場合は、接続処理を行う
     if (state == BluetoothDeviceState.disconnected) {
-      await widget.device.connect();
+      await widget.device?.connect();
     }
 
     // Bluetoothのサービスを取得する
-    final targetServices = await widget.device.discoverServices();
+    final targetServices = await widget.device?.discoverServices();
 
     // 対応しているサービスを探す
-    return targetServices.firstWhereOrNull((element) {
+    return targetServices?.firstWhereOrNull((element) {
       return element.uuid.toString() == BluetoothConstants.serviceUuid;
     });
   }
-
-  /// デバイスにwifiの情報を送信する
-  /*void sendWifiInformation() async {
-    // 入力されたssidとpasswordの情報を取得する
-    final ssid = _inputSsidController.text;
-    final password = _inputPasswordController.text;
-    final service = await findService();
-
-    // wifiのssidを送信(書き込む)ためのcharacteristicを取得する
-    final wifiSsidCharacteristic =
-    service?.characteristics.firstWhereOrNull((element) {
-      return element.uuid.toString() ==
-          BluetoothConstants.wifiSsidCharacteristicUuid;
-    });
-
-    // wifiのpasswordを送信(書き込む)ためのcharacteristicを取得する
-    final wifiPasswordCharacteristic =
-    service?.characteristics.firstWhereOrNull((element) {
-      return element.uuid.toString() ==
-          BluetoothConstants.wifiPasswordCharacteristicUuid;
-    });
-
-    // wifiとpasswordのcharacteristicが取得できていれば、書き込みを行う
-    if (wifiSsidCharacteristic != null && wifiPasswordCharacteristic != null) {
-      await writeToCharacteristic(wifiSsidCharacteristic, ssid);
-      await writeToCharacteristic(wifiPasswordCharacteristic, password);
-    }
-  }*/
-
+  
   /// 選択した色をESP32に送信する
   void sendSelectedColor() async {
     final service = await findService();
-    final color = _selectedColor;
+    final color = ledColor;
     final colorCharacteristic =
     service?.characteristics.firstWhereOrNull((element) {
       return element.uuid.toString() ==
@@ -96,32 +71,13 @@ class DeviceScreenState extends State<DeviceScreen> {
     }
     await writeToCharacteristic(colorCharacteristic, color);
   }
-//wi-fiは使用しない
-  /*
-  Stream<String> getEsp32WiFiStatus() async* {
-    final service = await findService();
-    final wifiStatusCharacteristic = service?.characteristics.firstWhereOrNull((element) {
-      return element.uuid.toString() ==
-          BluetoothConstants.wifiConnectionStatusCharacteristicUuid;
-    });
-    if (wifiStatusCharacteristic == null) {
-      log("wifiStatusCharacteristic is null");
-      return;
-    }
-    wifiStatusCharacteristic.setNotifyValue(true);
 
-    await for (final value in wifiStatusCharacteristic.onValueChangedStream) {
-      final connectionStatus = String.fromCharCodes(value);
-      log("wifi connection status: $connectionStatus");
-      yield connectionStatus;
-    }
-  }*/
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.device.name),
+        title: const Text('device'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -140,49 +96,7 @@ class DeviceScreenState extends State<DeviceScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /*const Text(
-                      "Wi-Fi設定",
-                      style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _inputSsidController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'SSID',
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: _inputPasswordController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'パスワード',
-                      ),
-                    ),*/
-                    //const SizedBox(height: 8),
-                    /*Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                       StreamBuilder(
-                          stream: getEsp32WiFiStatus(),
-                          initialData: "未接続",
-                          builder: (context, snapshot) {
-                            return Text(
-                              snapshot.data.toString(),
-                            );
-                          },
-                        ),
-                        ElevatedButton(
-                          onPressed: sendWifiInformation,
-                          child: const Text("接続"),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),*/
+
               const SizedBox(height: 16),
               Container(
                 decoration: BoxDecoration(
@@ -201,7 +115,7 @@ class DeviceScreenState extends State<DeviceScreen> {
                     ),
                     const SizedBox(height: 16),
                     DropdownButton<String>(
-                      value: _selectedColor,
+                      value: ledColor,
                       items: const [
                         DropdownMenuItem(
                           value: "red",
@@ -218,7 +132,7 @@ class DeviceScreenState extends State<DeviceScreen> {
                       ],
                       onChanged: (String? color) {
                         setState(() {
-                          _selectedColor = color;
+                          ledColor = color;
                         });
 
                         // 選択した色をESP32に送信する

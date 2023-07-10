@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:tech_seeker_2023/peace.dart';
-import 'package:tech_seeker_2023/attack.dart';
 import 'package:tech_seeker_2023/room.dart';
+import 'package:tech_seeker_2023/bluetooth_device.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+
 
 class GotoPage extends StatefulWidget {
-  const GotoPage({super.key});
-
+  const GotoPage({super.key,this.device});
+  final BluetoothDevice? device;
   @override
   State<StatefulWidget> createState() {
     return GoPageState();
@@ -14,7 +15,7 @@ class GotoPage extends StatefulWidget {
 
 class GoPageState extends State {
   final TextEditingController controller = TextEditingController();
-
+  BluetoothDevice? device;
   // 選択中フッターメニューのインデックスを一時保存する用変数
   int selectedIndex = 0;
 
@@ -57,33 +58,7 @@ class GoPageState extends State {
               ElevatedButton(onPressed: () {}, child: const Text('事前')),
               ElevatedButton(onPressed: () {}, child: const Text('開けた時')),
             ]),
-            const Text('嫌がらせ',
-                style: TextStyle(
-                  fontSize: 36,
-                )),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 100),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AttackPage()));
-                        },
-                        child: const Text('ON')),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PeacePage()));
-                        },
-                        child: const Text('OFF')),
-                  ]),
-            ),
+
           ],
         ),
       ),

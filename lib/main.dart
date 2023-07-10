@@ -3,11 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:tech_seeker_2023/go.dart';
 import 'package:tech_seeker_2023/room.dart';
+import 'package:tech_seeker_2023/bluetooth_device.dart';
 import 'package:tech_seeker_2023/bluetooth_device_list.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 
 void main() {
+
   if (Platform.isAndroid) {
     WidgetsFlutterBinding.ensureInitialized();
     [
@@ -20,27 +23,36 @@ void main() {
       runApp(const MyApp());
     });
   } else {
-    runApp(const MyApp());
+    runApp( const MyApp());
   }
 }
+class MyApp extends StatefulWidget {
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+    BluetoothDevice? device;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       debugShowCheckedModeBanner: false, // debug ラベル削除
       title: '親フラ感知',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const FindDevicesScreen(),
-    );
-  }
+      home: const MyHomePage(title: '親ふら',),
+      routes: {
+        '/bluetooth': (context) => const FindDevicesScreen(),
+        }
+      );
+    }
 }
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -108,12 +120,13 @@ class BackgroundPainter extends CustomPainter {
 
 
 class _MyHomePageState extends State<MyHomePage> {
-
+  BluetoothDevice? device;
   final TextEditingController controller = TextEditingController();
 
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
 
       body: CustomPaint(
@@ -135,21 +148,10 @@ class _MyHomePageState extends State<MyHomePage> {
             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             // メソッドみたいなもの
             children: <Widget>[
+
               Padding(padding: const EdgeInsets.only(top: 150),
                 child: Image.asset('images/ロゴ.png',),),
-              /*Padding(padding: const EdgeInsets.only()
-                , child: ElevatedButton(
-                    style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(200, 80)),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(
-                              builder: (context) => BluetoothPage()));
-                    },
-                    child: const Text("bluetooth",
-                      style: TextStyle(
-                          fontSize: 20
-                      ),)),),*/
+
 
               Padding(padding: const EdgeInsets.only(top: 160, bottom: 100)
                 , child: ElevatedButton(
@@ -163,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => const GotoPage()));
+                          MaterialPageRoute(builder: (context) =>  GotoPage(device:device)));
                     },
                     child: const Text("自分が外に居る時",
                       style: TextStyle(
@@ -183,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       Navigator.push(context,
                           MaterialPageRoute(
-                              builder: (context) => const RoomPage()));
+                              builder: (context) =>  RoomPage(device:device)));
                     },
                     child: const Text(" 自分が部屋に居る時 ",
                       style: TextStyle(
@@ -196,7 +198,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   Expanded(
                     child: TextButton(onPressed: () {}, child: const Text("LINE Notify 入れた？")),),
                   Expanded(
-                    child: TextButton(onPressed: () {}, child: const Text("操作が分からない")),),
+                    child: TextButton(onPressed: () {
+                      Navigator.pushNamed(context, '/bluetooth');
+                    }, child: const Text("bluetooth接続してる？")),),
 
                 ]),
               )

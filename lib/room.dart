@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+//import 'package:tech_seeker_2023/main.dart';
 import 'package:tech_seeker_2023/go.dart';
-
+import 'package:tech_seeker_2023/bluetooth_device.dart';
+//import 'package:tech_seeker_2023/bluetooth_device_list.dart';
 
 class RoomPage extends StatefulWidget {
-  const RoomPage({super.key});
-
+  const RoomPage({super.key,this.device});
+  final BluetoothDevice? device;
   @override
   State<StatefulWidget> createState() {
     return RoomPageState();
@@ -13,8 +16,9 @@ class RoomPage extends StatefulWidget {
 
 
 class RoomPageState extends State {
+  BluetoothDevice? device;
   final TextEditingController controller = TextEditingController();
-  String? ledColor = '赤色';
+  String? ledColor = 'red';
   String?  buzzerVolume = '25';
 
   @override
@@ -94,22 +98,23 @@ class RoomPageState extends State {
                 DropdownButton(
                     items: const[
                       DropdownMenuItem(
-                        value: '赤色',
+                        value: 'red',
                         child:  Text('赤色'),
                       ),
                       DropdownMenuItem(
-                        value: '青色',
+                        value: 'blue',
                         child:  Text('青色'),
                       ),
                       DropdownMenuItem(
-                        value: '黄色',
+                        value: 'yellow',
                         child:  Text('黄色'),
                       ),
                     ],
-                   onChanged: (String? value){
+                   onChanged: (String? color){
                       setState(() {
-                        ledColor = value;
+                        ledColor = color;
                       });
+
                    },
                     value: ledColor,
                 )
@@ -125,7 +130,14 @@ class RoomPageState extends State {
         height: 70,
         child: FloatingActionButton(
           //backgroundColor: Theme.of(context).accentColor,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                builder: (context) =>   DeviceScreen(device: device,ledColor:ledColor),
+                ));
+
+          },
           shape: const CircleBorder(),
           child: const Icon(Icons.done),
 
@@ -160,7 +172,7 @@ class RoomPageState extends State {
             if (index == 0) {
               // Home アイコンが押されたときの処理
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const RoomPage()));
+                  MaterialPageRoute(builder: (context) =>  RoomPage(device: device)));
               // 他の処理を追加
             } else if (index == 1) {
               // go アイコンが押されたときの処理
