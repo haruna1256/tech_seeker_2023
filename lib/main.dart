@@ -7,7 +7,7 @@ import 'package:tech_seeker_2023/bluetooth_device.dart';
 import 'package:tech_seeker_2023/bluetooth_device_list.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
 
@@ -122,7 +122,7 @@ class BackgroundPainter extends CustomPainter {
 class _MyHomePageState extends State<MyHomePage> {
   BluetoothDevice? device;
   final TextEditingController controller = TextEditingController();
-
+  final url = Uri.parse('https://notify-bot.line.me/ja/');
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +196,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly, children:[
                   Expanded(
-                    child: TextButton(onPressed: () {}, child: const Text("LINE Notify 入れた？")),),
+                    child: TextButton(onPressed: () {
+                      launchUrl(url);
+                    }, child: const Text("LINE Notify 入れた？")),),
                   Expanded(
                     child: TextButton(onPressed: () async {
                       final selectedDevice = await Navigator.push<BluetoothDevice?>(context, MaterialPageRoute(builder: (context) => const FindDevicesScreen()));

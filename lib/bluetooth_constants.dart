@@ -18,9 +18,20 @@ class BluetoothConstants {
   /// ESP32からFlutterに部屋ブザーを送信するセンサー値のキャラクタリスティックのUUID
   static const String roomBuzzerCharacteristicUuid = "14594b63-f642-4da4-bdf8-c44165677d96";
 
-  /// ESP32からFlutterに部屋事前を送信するセンサー値のキャラクタリスティックのUUID
+  /// ESP32からFlutterに部屋通知タイミングを送信するセンサー値のキャラクタリスティックのUUID
   static const String roomTimeCharacteristicUuid = "391c0103-9e67-47b0-9a73-a4481a1768b5";
 
+  /// ESP32からFlutterに外必要かを送信するセンサー値のキャラクタリスティックのUUID
+  static const String goNeedCharacteristicUuid = "8da3e607-bda7-42b6-8123-53b4cc9d3318";
+
+  /// ESP32からFlutterに外通知タイミングを送信するセンサー値のキャラクタリスティックのUUID
+  static const String goTimeCharacteristicUuid = "07438c11-eba9-4487-9871-87fc62fd517d";
+
+  /// FlutterからESP32に外色を送信するためのキャラクタリスティックのUUID
+  static const String goColorCharacteristicUuid = "b1b0e200-8854-4931-a1f2-08b6502be9b6";
+
+  /// ESP32からFlutterに部屋ブザーを送信するセンサー値のキャラクタリスティックのUUID
+  static const String goBuzzerCharacteristicUuid = "14594b63-f642-4da4-bdf8-c44165677d96";
 /*
   /// FlutterからESP32にWiFiのSSIDを送信するためのキャラクタリスティックのUUID
   static const String wifiSsidCharacteristicUuid = "54acff26-12f7-4502-a9b4-3f82a268df08";
