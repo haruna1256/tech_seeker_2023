@@ -5,8 +5,6 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:tech_seeker_2023/bluetooth_constants.dart';
 import 'package:tech_seeker_2023/main.dart';
 import 'package:tech_seeker_2023/room.dart';
-
-
 //ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 
@@ -64,7 +62,7 @@ class DeviceScreenState extends State<DeviceScreen> {
     final colorCharacteristic =
     service?.characteristics.firstWhereOrNull((element) {
       return element.uuid.toString() ==
-          BluetoothConstants.colorCharacteristicUuid;
+          BluetoothConstants.roomColorCharacteristicUuid;
     });
     if (colorCharacteristic == null || color == null) {
       return;

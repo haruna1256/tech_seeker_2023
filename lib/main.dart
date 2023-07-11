@@ -47,9 +47,9 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       home: const MyHomePage(title: '親ふら',),
-      routes: {
-        '/bluetooth': (context) => const FindDevicesScreen(),
-        }
+      // routes: {
+      //   '/bluetooth': (context) => const FindDevicesScreen(),
+      //   }
       );
     }
 }
@@ -198,8 +198,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   Expanded(
                     child: TextButton(onPressed: () {}, child: const Text("LINE Notify 入れた？")),),
                   Expanded(
-                    child: TextButton(onPressed: () {
-                      Navigator.pushNamed(context, '/bluetooth');
+                    child: TextButton(onPressed: () async {
+                      final selectedDevice = await Navigator.push<BluetoothDevice?>(context, MaterialPageRoute(builder: (context) => const FindDevicesScreen()));
+                      setState(() {
+                        device = selectedDevice;
+                      });
                     }, child: const Text("bluetooth接続してる？")),),
 
                 ]),

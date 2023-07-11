@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:tech_seeker_2023/bluetooth_constants.dart';
 //import 'package:tech_seeker_2023/main.dart';
 import 'package:tech_seeker_2023/go.dart';
 import 'package:tech_seeker_2023/bluetooth_device.dart';
 //import 'package:tech_seeker_2023/bluetooth_device_list.dart';
+// ignore: depend_on_referenced_packages
+import 'package:collection/collection.dart';
 
 class RoomPage extends StatefulWidget {
   const RoomPage({super.key,this.device});
@@ -15,11 +18,89 @@ class RoomPage extends StatefulWidget {
 }
 
 
-class RoomPageState extends State {
+class RoomPageState extends State<RoomPage> {
   BluetoothDevice? device;
   final TextEditingController controller = TextEditingController();
-  String? ledColor = 'red';
-  String?  buzzerVolume = '25';
+  String? ledColor = 'none';
+  String?  buzzerVolume = '0';
+  String? needing = '1';
+  String? timing = 'before';
+
+  Future<void> writeToCharacteristic(
+      BluetoothCharacteristic characteristic, String value) async {
+    List<int> codeUnits = [];
+    for (int i = 0; i < value.length; i++) {
+      codeUnits.add(value.codeUnitAt(i));
+    }
+    await characteristic.write(codeUnits);
+  }
+
+  Future<BluetoothService?> findService() async {
+    // 現在のBluetoothの接続状態を取得する
+    final state = await widget.device?.state.first;
+
+    // 接続状態が切断状態の場合は、接続処理を行う
+    if (state == BluetoothDeviceState.disconnected) {
+      await widget.device?.connect();
+    }
+
+    // Bluetoothのサービスを取得する
+    final targetServices = await widget.device?.discoverServices();
+
+    // 対応しているサービスを探す
+    return targetServices?.firstWhereOrNull((element) {
+      return element.uuid.toString() == BluetoothConstants.serviceUuid;
+    });
+  }
+
+  /// 選択した色をESP32に送信する
+  Future<void> sendSelectedColor() async {
+    final color = ledColor;
+    final colorCharacteristic = await getCharByUuid(BluetoothConstants.roomColorCharacteristicUuid);
+    if (colorCharacteristic == null || color == null) {
+      return;
+    }
+    await writeToCharacteristic(colorCharacteristic, color);
+  }
+
+  Future<BluetoothCharacteristic?> getCharByUuid(String uuid) async {
+    final service = await findService();
+    return service?.characteristics.firstWhereOrNull((element) {
+      return element.uuid.toString() == uuid;
+    });
+  }
+
+  /// 選択した音量をESP32に送信する
+  Future<void> sendSelectedBuzzer() async {
+    final buzzer = buzzerVolume;
+    final buzzerCharacteristic = await getCharByUuid(BluetoothConstants.roomBuzzerCharacteristicUuid);
+    if (buzzerCharacteristic == null || buzzer == null) {
+      return;
+    }
+    await writeToCharacteristic(buzzerCharacteristic, buzzer);
+  }
+
+  /// 必要なのかESP32に送信する
+  Future<void> sendSelectedNeed() async {
+    final need = needing;
+    final roomNeedCharacteristic = await getCharByUuid(BluetoothConstants.roomNeedCharacteristicUuid);
+    if (roomNeedCharacteristic == null || need == null) {
+      return;
+    }
+    await writeToCharacteristic(roomNeedCharacteristic, need);
+  }
+
+  /// 通知タイミングをESP32に送信する
+  Future<void> sendSelectedTime() async {
+    final time = timing;
+    final roomTimeCharacteristic = await getCharByUuid(BluetoothConstants.roomTimeCharacteristicUuid);
+    if (roomTimeCharacteristic == null || time == null) {
+      return;
+    }
+    await writeToCharacteristic(roomTimeCharacteristic, time);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -33,35 +114,69 @@ class RoomPageState extends State {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           //mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
             Padding(padding: const EdgeInsets.only(top: 30 ),child:Image.asset('images/家.png',width:260,height: 260,),),
 
-            //Container(
-            //alignment: Alignment.topCenter,
-
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              const Text('必要',
+              const Text('使用する？',
                   style: TextStyle(
                     fontSize: 36,
                   )),
-              ElevatedButton(onPressed: () {}, child: const Text('OFF')),
+              DropdownButton(items: const[
+                DropdownMenuItem(
+                  value: '1',
+                  child:  Text('ON'),
+                ),
+                DropdownMenuItem(
+                  value: '0',
+                  child:  Text('OFF'),
+                ),
+              ],
+                onChanged: (String? need){
+                  setState(() {
+                    needing = need;
+                  });
+                },
+                value: needing,
+              )
             ]),
+
             const Text('使うタイミング',
                 style: TextStyle(
                   fontSize: 36,
                 )),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              ElevatedButton(onPressed: () {}, child: const Text('事前')),
-              ElevatedButton(onPressed: () {}, child: const Text('開けた時')),
+              DropdownButton(items: const[
+                DropdownMenuItem(
+                  value: 'before',
+                  child:  Text('事前'),
+                ),
+                DropdownMenuItem(
+                  value: 'after',
+                  child:  Text('開閉直後'),
+                ),
+                DropdownMenuItem(
+                  value: 'mix',
+                  child:  Text('両方'),
+                ),
+              ],
+                onChanged: (String? time){
+                  setState(() {
+                    timing = time;
+                  });
+                },
+                value: timing,
+              )
             ]),
             const Text('ブザー',
                 style: TextStyle(
                   fontSize: 36,
                 )),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              ElevatedButton(onPressed: () {}, child: const Text('ON')),
-              ElevatedButton(onPressed: () {}, child: const Text('OFF')),
               DropdownButton(items: const[
+                DropdownMenuItem(
+                  value: '0',
+                  child:  Text('0%'),
+                ),
                 DropdownMenuItem(
                   value: '25',
                   child:  Text('25%'),
@@ -79,9 +194,9 @@ class RoomPageState extends State {
                   child:  Text('100%'),
                 ),
               ],
-                onChanged: (String? value){
+                onChanged: (String? buzzer){
                 setState(() {
-                  buzzerVolume = value;
+                  buzzerVolume = buzzer;
                 });
               },
                 value: buzzerVolume,
@@ -93,10 +208,12 @@ class RoomPageState extends State {
                 )),
             Padding(padding: const EdgeInsets.only(bottom: 80)
               ,child:Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                ElevatedButton(onPressed: () {}, child: const Text('ON')),
-                ElevatedButton(onPressed: () {}, child: const Text('OFF')),
                 DropdownButton(
                     items: const[
+                      DropdownMenuItem(
+                        value: 'none',
+                        child:  Text('なし'),
+                      ),
                       DropdownMenuItem(
                         value: 'red',
                         child:  Text('赤色'),
@@ -130,13 +247,15 @@ class RoomPageState extends State {
         height: 70,
         child: FloatingActionButton(
           //backgroundColor: Theme.of(context).accentColor,
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                builder: (context) =>   DeviceScreen(device: device,ledColor:ledColor),
-                ));
-
+          onPressed: () async {
+            // 必要かどうか
+            await sendSelectedNeed();
+            // 選択した音量をESP32に送信する
+            await sendSelectedBuzzer();
+            // 選択した色をESP32に送信する
+            await sendSelectedColor();
+            // 選択して通知タイミングをESP32に送信する
+            await sendSelectedTime();
           },
           shape: const CircleBorder(),
           child: const Icon(Icons.done),
