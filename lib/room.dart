@@ -115,7 +115,7 @@ class RoomPageState extends State<RoomPage> {
           children: <Widget>[
             Padding(padding: const EdgeInsets.only(top: 30 ),child:Image.asset('images/家.png',width:260,height: 260,),),
 
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            /*Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               const Text('使用する？',
                   style: TextStyle(
                     fontSize: 36,
@@ -137,7 +137,7 @@ class RoomPageState extends State<RoomPage> {
                 },
                 value: needing,
               )
-            ]),
+            ]),*/
 
             const Text('使うタイミング',
                 style: TextStyle(
