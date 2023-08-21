@@ -113,7 +113,7 @@ class RoomPageState extends State<RoomPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           //mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Padding(padding: const EdgeInsets.only(top: 30 ),child:Image.asset('images/家.png',width:260,height: 260,),),
+            Padding(padding: const EdgeInsets.only(top: 30 ),child:Image.asset('images/家.png',width:200,height: 200,),),
 
             /*Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               const Text('使用する？',
@@ -241,26 +241,7 @@ class RoomPageState extends State<RoomPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // ボタンの位置をセンターに
-      floatingActionButton: SizedBox(
-        width: 70,
-        height: 70,
-        child: FloatingActionButton(
-          //backgroundColor: Theme.of(context).accentColor,
-          onPressed: () async {
-            // 必要かどうか
-            await sendSelectedNeed();
-            // 選択した音量をESP32に送信する
-            await sendSelectedBuzzer();
-            // 選択した色をESP32に送信する
-            await sendSelectedColor();
-            // 選択して通知タイミングをESP32に送信する
-            await sendSelectedTime();
-          },
-          shape: const CircleBorder(),
-          child: const Icon(Icons.done),
 
-        ),
-      ),
       bottomNavigationBar: SizedBox(
         height: 80,
         child: BottomNavigationBar(
@@ -273,30 +254,33 @@ class RoomPageState extends State<RoomPage> {
                 color: Color(0xFFE8F4F7),
                 size: 40,
               ),
-              label: 'Home',
+              label: '戻る',
             ),
             BottomNavigationBarItem(
-              icon: ImageIcon(
-                AssetImage('images/太陽.png'),
+              icon: Icon(Icons.done,
                 color: Color(0xFFE8F4F7),
                 size: 40,
               ),
-              label: 'go',
+              label: '送信',
             ),
           ],
 
           currentIndex: 0,
-          onTap: (int index) {
+          onTap: (int index) async{
             if (index == 0) {
               // Home アイコンが押されたときの処理
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) =>  RoomPage(device: device)));
+              Navigator.of(context).pop();
               // 他の処理を追加
             } else if (index == 1) {
               // go アイコンが押されたときの処理
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => const GotoPage()));
-              // 他の処理を追加
+              // 必要かどうか
+              await sendSelectedNeed();
+              // 選択した音量をESP32に送信する
+              await sendSelectedBuzzer();
+              // 選択した色をESP32に送信する
+              await sendSelectedColor();
+              // 選択して通知タイミングをESP32に送信する
+              await sendSelectedTime();
             }
           },
         ),

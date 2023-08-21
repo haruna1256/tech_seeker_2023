@@ -191,7 +191,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: TextStyle(
                           fontSize: 18
                       ),)),),
-              Padding(padding: const EdgeInsets.only(top: 190,right:30,left:30)
+              // top 190
+              Padding(padding: const EdgeInsets.only(top: 0,right:30,left:30)
                 ,
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly, children:[
